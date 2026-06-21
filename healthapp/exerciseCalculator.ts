@@ -9,17 +9,9 @@ interface ExerciseResult {
 }
 
 const ratingDescriptions: Record<number, string> = {
-  0: 'too bad',
   1: 'bad',
-  2: 'could be better',
-  3: 'ok',
-  4: 'not bad but could be better',
-  5: 'good',
-  6: 'great',
-  7: 'excelent',
-  8: 'incredible',
-  9: 'superb',
-  10: 'perfect',
+  2: 'not too bad but could be better',
+  3: 'good',
 };
 
 const calculateExercises = (
@@ -42,13 +34,9 @@ const calculateExercises = (
 };
 
 const calculateRating = (average: number, target: number): number => {
-  const ratio = average / target;
-  if (ratio >= 1.0) return 5;
-  if (ratio >= 0.8) return 4;
-  if (ratio >= 0.6) return 3;
-  if (ratio >= 0.4) return 2;
-  if (ratio >= 0.2) return 1;
-  return 0;
+  if (average >= target) return 3;
+  if (average >= target * 0.75) return 2;
+  return 1;
 };
 
 console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
