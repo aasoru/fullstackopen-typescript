@@ -1,6 +1,6 @@
 import { isNotNumber } from './utils.ts';
 
-interface ExerciseResult {
+export interface ExerciseResult {
   periodLength: number;
   trainingDays: number;
   success: boolean;
@@ -16,7 +16,7 @@ const ratingDescriptions: Record<number, string> = {
   3: 'good',
 };
 
-const calculateExercises = (
+export const calculateExercises = (
   hours: number[],
   target: number
 ): ExerciseResult => {
@@ -59,5 +59,7 @@ const parseArguments = (args: string[]): ExerciseArguments => {
   };
 };
 
-const { target, hours } = parseArguments(process.argv);
-console.log(calculateExercises(hours, target));
+if (process.argv[1] === import.meta.filename) {
+  const { target, hours } = parseArguments(process.argv);
+  console.log(calculateExercises(hours, target));
+}
