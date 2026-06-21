@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
+    "target": "esnext",
     "noEmit": true,
-    "types": ["node"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
