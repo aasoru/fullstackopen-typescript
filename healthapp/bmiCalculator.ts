@@ -11,7 +11,7 @@ const bmiTable = {
   obeseIII: [40, 100],
 };
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / (height / 100) ** 2;
 
   for (const [category, [min, max]] of Object.entries(bmiTable)) {
@@ -22,11 +22,13 @@ const calculateBmi = (height: number, weight: number): string => {
   throw new Error('out of range');
 };
 
-const height = Number(process.argv[2]);
-const weight = Number(process.argv[3]);
+if (process.argv[1] === import.meta.filename) {
+  const height = Number(process.argv[2]);
+  const weight = Number(process.argv[3]);
 
-if (isNotNumber(height) || isNotNumber(weight)) {
-  throw new Error('Provided values were not numbers!');
+  if (isNotNumber(height) || isNotNumber(weight)) {
+    throw new Error('Provided values were not numbers!');
+  }
+
+  console.log(calculateBmi(height, weight));
 }
-
-console.log(calculateBmi(height, weight));
