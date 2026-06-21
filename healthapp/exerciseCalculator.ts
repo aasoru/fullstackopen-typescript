@@ -1,3 +1,5 @@
+import { isNotNumber } from './utils.ts';
+
 interface ExerciseResult {
   periodLength: number;
   trainingDays: number;
@@ -39,4 +41,23 @@ const calculateRating = (average: number, target: number): number => {
   return 1;
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+interface ExerciseArguments {
+  target: number;
+  hours: number[];
+}
+
+const parseArguments = (args: string[]): ExerciseArguments => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+  if (isNotNumber(args[2])) throw new Error('Target must be a number');
+
+  const hours = args.slice(3);
+  if (hours.some(isNotNumber)) throw new Error('Hours must be numbers');
+
+  return {
+    target: Number(args[2]),
+    hours: hours.map(Number),
+  };
+};
+
+const { target, hours } = parseArguments(process.argv);
+console.log(calculateExercises(hours, target));

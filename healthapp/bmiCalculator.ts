@@ -1,3 +1,5 @@
+import { isNotNumber } from './utils.ts';
+
 const bmiTable = {
   underweightSevereThinness: [0, 16],
   underweightModerateThinness: [16, 17],
@@ -20,4 +22,11 @@ const calculateBmi = (height: number, weight: number): string => {
   throw new Error('out of range');
 };
 
-console.log(calculateBmi(180, 74));
+const height = Number(process.argv[2]);
+const weight = Number(process.argv[3]);
+
+if (isNotNumber(height) || isNotNumber(weight)) {
+  throw new Error('Provided values were not numbers!');
+}
+
+console.log(calculateBmi(height, weight));
