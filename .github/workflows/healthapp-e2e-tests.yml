@@ -7,39 +7,40 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 15
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v5
       with:
         node-version: '24'
-    
+
     - name: Install healthapp dependencies
       working-directory: ./healthapp
       run: npm install
-    
+
     - name: Lint healthapp
       working-directory: ./healthapp
       run: npm run lint
-    
+
+    - name: Install test dependencies
+      working-directory: ./healthapp-tests
+      run: npm install
+
+    - name: Install Playwright browsers
+      working-directory: ./healthapp-tests
+      run: npx playwright install --with-deps chromium
+
     - name: Start healthapp server
       working-directory: ./healthapp
       run: |
         npm start &
         echo $! > server.pid
-        sleep 3
-    
-    - name: Install test dependencies
-      working-directory: ./healthapp-tests
-      run: npm install
-    
-    - name: Install Playwright browsers
-      working-directory: ./healthapp-tests
-      run: npx playwright install --with-deps chromium
-    
+        sleep 5
+
     - name: Run e2e tests
       working-directory: ./healthapp-tests
       run: npm test
