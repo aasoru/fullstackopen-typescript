@@ -40,11 +40,11 @@ jobs:
 
     - name: Start healthapp server
       working-directory: ./healthapp
-      run: npm start &
+      run: npm start > /tmp/server.log 2>&1 &
 
     - name: Wait for server to be ready
       working-directory: ./healthapp-tests
-      run: npx wait-on http://localhost:3000/api/ping --timeout 30000
+      run: npx wait-on http://localhost:3000/api/ping --timeout 30000 || (echo "=== SERVER LOG ===" && cat /tmp/server.log && exit 1)
 
     - name: Run e2e tests
       working-directory: ./healthapp-tests
