@@ -2,7 +2,7 @@ import express, { type Response } from "express";
 import { z } from "zod";
 import patientService from "../services/patientService.ts";
 import toNewPatient from "../utils.ts";
-import type { NonSensitivePatient } from "../types.ts";
+import type { NonSensitivePatient, Patient } from "../types.ts";
 
 const router = express.Router();
 
@@ -21,6 +21,15 @@ router.post("/", (req, res) => {
     } else {
       res.status(400).send({ error: "Unknown error" });
     }
+  }
+});
+
+router.get("/:id", (req, res: Response<Patient | string>) => {
+  const patient = patientService.findById(req.params.id);
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.status(404).send("Patient not found");
   }
 });
 
