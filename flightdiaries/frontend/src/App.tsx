@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import type { DiaryEntry } from "./types";
+import type { DiaryEntry, NewDiaryEntry } from "./types";
 
 const App = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
+  const [date, setDate] = useState("");
+  const [weather, setWeather] = useState("");
+  const [visibility, setVisibility] = useState("");
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     axios.get<DiaryEntry[]>("/api/diaries").then((response) => {
@@ -11,9 +15,53 @@ const App = () => {
     });
   }, []);
 
+  const addDiary = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    const newEntry: NewDiaryEntry = { date, weather, visibility, comment };
+    axios.post<DiaryEntry>("/api/diaries", newEntry).then((response) => {
+      setDiaries(diaries.concat(response.data));
+    });
+    setDate("");
+    setWeather("");
+    setVisibility("");
+    setComment("");
+  };
+
   return (
     <div>
-      <h1>Diary entries</h1>
+      <h2>Add new entry</h2>
+      <form onSubmit={addDiary}>
+        <div>
+          date{" "}
+          <input
+            value={date}
+            onChange={({ target }) => setDate(target.value)}
+          />
+        </div>
+        <div>
+          weather{" "}
+          <input
+            value={weather}
+            onChange={({ target }) => setWeather(target.value)}
+          />
+        </div>
+        <div>
+          visibility{" "}
+          <input
+            value={visibility}
+            onChange={({ target }) => setVisibility(target.value)}
+          />
+        </div>
+        <div>
+          comment{" "}
+          <input
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+          />
+        </div>
+        <button type="submit">add</button>
+      </form>
+      <h2>Diary entries</h2>
       {diaries.map((diary) => (
         <div key={diary.id}>
           <b>{diary.date}</b>
