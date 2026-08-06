@@ -74,6 +74,44 @@ export type UnionOmit<T, K extends string | number | symbol> = T extends unknown
   ? Omit<T, K>
   : never;
 
+const BaseEntrySchema = z.object({
+  description: z.string(),
+  date: z.string().date(),
+  specialist: z.string(),
+  diagnosisCodes: z.array(z.string()).optional(),
+});
+
+export const NewEntrySchema = z.discriminatedUnion("type", [
+  BaseEntrySchema.extend({
+    type: z.literal("Hospital"),
+    discharge: z.object({
+      date: z.string().date(),
+      criteria: z.string(),
+    }),
+  }),
+  BaseEntrySchema.extend({
+    type: z.literal("OccupationalHealthcare"),
+    employerName: z.string(),
+    sickLeave: z
+      .object({
+        startDate: z.string().date(),
+        endDate: z.string().date(),
+      })
+      .optional(),
+  }),
+  BaseEntrySchema.extend({
+    type: z.literal("HealthCheck"),
+    healthCheckRating: z.union([
+      z.literal(HealthCheckRating.Healthy),
+      z.literal(HealthCheckRating.LowRisk),
+      z.literal(HealthCheckRating.HighRisk),
+      z.literal(HealthCheckRating.CriticalRisk),
+    ]),
+  }),
+]);
+
+export type NewEntry = z.infer<typeof NewEntrySchema>;
+
 export interface Patient extends NewPatient {
   id: string;
   entries: Entry[];
