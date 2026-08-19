@@ -35,7 +35,7 @@ const PatientPage = ({ diagnoses }: Props) => {
           setError(
             data.error
               .map((issue: { message: string }) => issue.message)
-              .join(", ")
+              .join(", "),
           );
         } else if (typeof data?.error === "string") {
           setError(data.error);
@@ -77,8 +77,12 @@ const PatientPage = ({ diagnoses }: Props) => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       {formOpen ? (
         <AddEntryForm
-          onCancel={() => setFormOpen(false)}
+          onCancel={() => {
+            setFormOpen(false);
+            setError(undefined);
+          }}
           onSubmit={submitEntry}
+          diagnoses={diagnoses}
         />
       ) : (
         <Button variant="contained" onClick={() => setFormOpen(true)}>

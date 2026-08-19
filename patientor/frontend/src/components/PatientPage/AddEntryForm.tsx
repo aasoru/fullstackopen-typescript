@@ -1,21 +1,30 @@
 import { useState } from "react";
-import { NewEntry, HealthCheckRating } from "../../types";
+import {
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  SelectChangeEvent,
+} from "@mui/material";
+import { NewEntry, HealthCheckRating, Diagnosis } from "../../types";
 
 type EntryType = "HealthCheck" | "Hospital" | "OccupationalHealthcare";
 
 interface Props {
   onCancel: () => void;
   onSubmit: (entry: NewEntry) => void;
+  diagnoses: Diagnosis[];
 }
 
-const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
+const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [type, setType] = useState<EntryType>("HealthCheck");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   // HealthCheck
-  const [healthCheckRating, setHealthCheckRating] = useState("");
+  const [healthCheckRating, setHealthCheckRating] = useState<string>("");
 
   // Hospital
   const [dischargeDate, setDischargeDate] = useState("");
@@ -26,10 +35,20 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [sickLeaveStart, setSickLeaveStart] = useState("");
   const [sickLeaveEnd, setSickLeaveEnd] = useState("");
 
+  const handleDiagnosisChange = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value;
+    setDiagnosisCodes(typeof value === "string" ? value.split(",") : value);
+  };
+
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const base = { description, date, specialist };
+    const base = {
+      description,
+      date,
+      specialist,
+      ...(diagnosisCodes.length > 0 ? { diagnosisCodes } : {}),
+    };
 
     switch (type) {
       case "HealthCheck":
@@ -86,7 +105,12 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           />
         </div>
         <div>
-          date <input value={date} onChange={(e) => setDate(e.target.value)} />
+          date{" "}
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
         </div>
         <div>
           specialist{" "}
@@ -96,14 +120,36 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
           />
         </div>
 
+        <FormControl fullWidth>
+          <InputLabel>Diagnosis codes</InputLabel>
+          <Select
+            multiple
+            value={diagnosisCodes}
+            onChange={handleDiagnosisChange}
+            label="Diagnosis codes"
+          >
+            {diagnoses.map((d) => (
+              <MenuItem key={d.code} value={d.code}>
+                {d.code} {d.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         {type === "HealthCheck" && (
-          <div>
-            healthcheck rating{" "}
-            <input
+          <FormControl fullWidth>
+            <InputLabel>Health check rating</InputLabel>
+            <Select
               value={healthCheckRating}
               onChange={(e) => setHealthCheckRating(e.target.value)}
-            />
-          </div>
+              label="Health check rating"
+            >
+              <MenuItem value="0">Healthy (0)</MenuItem>
+              <MenuItem value="1">Low risk (1)</MenuItem>
+              <MenuItem value="2">High risk (2)</MenuItem>
+              <MenuItem value="3">Critical risk (3)</MenuItem>
+            </Select>
+          </FormControl>
         )}
 
         {type === "Hospital" && (
@@ -111,6 +157,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <div>
               discharge date{" "}
               <input
+                type="date"
                 value={dischargeDate}
                 onChange={(e) => setDischargeDate(e.target.value)}
               />
@@ -137,6 +184,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <div>
               sick leave start{" "}
               <input
+                type="date"
                 value={sickLeaveStart}
                 onChange={(e) => setSickLeaveStart(e.target.value)}
               />
@@ -144,6 +192,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
             <div>
               sick leave end{" "}
               <input
+                type="date"
                 value={sickLeaveEnd}
                 onChange={(e) => setSickLeaveEnd(e.target.value)}
               />
