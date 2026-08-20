@@ -98,23 +98,26 @@ const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
           </select>
         </div>
         <div>
-          description{" "}
+          <label htmlFor="description">Description</label>{" "}
           <input
+            id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <div>
-          date{" "}
+          <label htmlFor="date">Date</label>{" "}
           <input
+            id="date"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
         <div>
-          specialist{" "}
+          <label htmlFor="specialist">Specialist</label>{" "}
           <input
+            id="specialist"
             value={specialist}
             onChange={(e) => setSpecialist(e.target.value)}
           />
